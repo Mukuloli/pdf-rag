@@ -1,0 +1,32 @@
+# Environment
+.env
+.env.local
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtualenv
+env/
+venv/
+ENV/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+
