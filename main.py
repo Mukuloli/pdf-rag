@@ -78,9 +78,6 @@ async def query_rag(request: QueryRequest):
 
 
 # Backward-compatible alias
-@app.post("/ask", response_model=QueryResponse)
-async def ask_rag(request: QueryRequest):
-    return await query_rag(request)
 
 
 @app.get("/health")
