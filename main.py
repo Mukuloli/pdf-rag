@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, StreamingResponse
 from pydantic import BaseModel, model_validator
 import uvicorn
 
@@ -77,7 +77,19 @@ async def query_rag(request: QueryRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Backward-compatible alias
+# Streaming, chat-style
+@app.post("/ask")
+async def ask_stream(request: QueryRequest):
+    async def token_generator():
+        async for event in rag_service.query_stream(
+            query=request.query,
+            namespace=request.namespace,
+            top_k=request.top_k,
+        ):
+            if event.get("type") == "token":
+                yield event["content"]
+
+    return StreamingResponse(token_generator(), media_type="text/plain")
 
 
 @app.get("/health")
