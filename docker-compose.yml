@@ -1,23 +1,15 @@
-version: '3.8'
+FROM python:3.11-slim
 
-services:
-  rag-api:
-    build: .
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env
-    volumes:
-      - ./logs:/app/logs
-    restart: unless-stopped
+WORKDIR /app
 
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - rag-api
-    restart: unless-stopped
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+# No mkdir logs command here!
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
