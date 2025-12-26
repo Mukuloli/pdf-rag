@@ -198,3 +198,65 @@ class RAGService:
         self.cache.set(cache_key, {"answer": answer, "sources": sources})
 
         return {"answer": answer, "sources": sources, "namespace": namespace}
+
+        docs = self.retriever.get_documents(query, namespace=namespace, top_k=top_k)
+        
+        chain = (
+            {
+                "context": lambda x: self._format_docs(docs),
+                "question": lambda x: query,
+            }
+            | self.prompt
+            | self.llm
+            | self.parser
+        )
+        
+        # Collect all chunks
+        answer = ""
+        async for chunk in chain.astream({}):
+            answer += chunk
+        
+        sources = [
+            {
+                "id": getattr(doc, "id", None),
+                "namespace": doc.metadata.get("source_namespace", namespace),
+                "metadata": doc.metadata,
+            }
+            for doc in docs
+        ]
+        
+        # Cache answer
+        self.cache.set(cache_key, {"answer": answer, "sources": sources})
+
+        return {"answer": answer, "sources": sources, "namespace": namespace}
+
+        docs = self.retriever.get_documents(query, namespace=namespace, top_k=top_k)
+        
+        chain = (
+            {
+                "context": lambda x: self._format_docs(docs),
+                "question": lambda x: query,
+            }
+            | self.prompt
+            | self.llm
+            | self.parser
+        )
+        
+        # Collect all chunks
+        answer = ""
+        async for chunk in chain.astream({}):
+            answer += chunk
+        
+        sources = [
+            {
+                "id": getattr(doc, "id", None),
+                "namespace": doc.metadata.get("source_namespace", namespace),
+                "metadata": doc.metadata,
+            }
+            for doc in docs
+        ]
+        
+        # Cache answer
+        self.cache.set(cache_key, {"answer": answer, "sources": sources})
+
+        return {"answer": answer, "sources": sources, "namespace": namespace}
