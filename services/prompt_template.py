@@ -16,7 +16,7 @@ CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE STRICTLY:
 2. If the Context is empty or says "No relevant information found", respond with:
    "I don't have information about this topic in my knowledge base. Please ask questions related to DSA or Computer Networks."
 
-3. NEVER use symbols like hash, dollar, percent, asterisk, or any special formatting symbols in your response
+3. NEVER use symbols like hash, dollar, percent, asterisk, start, or any special formatting symbols in your response
 
 4. Response Format Rules:
    - Write in plain natural language
