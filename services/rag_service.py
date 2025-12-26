@@ -6,7 +6,6 @@ from config.settings import settings
 from services.prompt_template import get_prompt
 from services.retriever import MultiNamespaceRetriever
 from utils.cache import SimpleCache
-from utils.text_formatter import format_response_text
 
 
 class RAGService:
@@ -85,10 +84,8 @@ class RAGService:
         # Stream the answer
         async for chunk in chain.astream({}):
             if chunk:  # Only yield non-empty chunks
-                # Format the chunk to fix spacing issues
-                formatted_chunk = format_response_text(chunk)
-                yield {"type": "token", "content": formatted_chunk}
-                full_answer.append(formatted_chunk)
+                yield {"type": "token", "content": chunk}
+                full_answer.append(chunk)
         
         # Yield completion signal
         yield {"type": "complete"}
@@ -122,13 +119,10 @@ class RAGService:
             | self.parser
         )
         
-        # Collect all chunks and format them
-        answer_chunks = []
+        # Collect all chunks
+        answer = ""
         async for chunk in chain.astream({}):
-            formatted_chunk = format_response_text(chunk)
-            answer_chunks.append(formatted_chunk)
-        
-        answer = "".join(answer_chunks)
+            answer += chunk
         
         sources = [
             {
