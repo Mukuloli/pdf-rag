@@ -6,6 +6,7 @@ from config.settings import settings
 from services.prompt_template import get_prompt
 from services.retriever import MultiNamespaceRetriever
 from utils.cache import SimpleCache
+from utils.text_formatter import format_response_text
 
 
 class RAGService:
@@ -84,8 +85,10 @@ class RAGService:
         # Stream the answer
         async for chunk in chain.astream({}):
             if chunk:  # Only yield non-empty chunks
-                yield {"type": "token", "content": chunk}
-                full_answer.append(chunk)
+                # Format the chunk to fix spacing issues
+                formatted_chunk = format_response_text(chunk)
+                yield {"type": "token", "content": formatted_chunk}
+                full_answer.append(formatted_chunk)
         
         # Yield completion signal
         yield {"type": "complete"}
@@ -119,72 +122,13 @@ class RAGService:
             | self.parser
         )
         
-        # Collect all chunks
-        answer = ""
+        # Collect all chunks and format them
+        answer_chunks = []
         async for chunk in chain.astream({}):
-            answer += chunk
+            formatted_chunk = format_response_text(chunk)
+            answer_chunks.append(formatted_chunk)
         
-        sources = [
-            {
-                "id": getattr(doc, "id", None),
-                "namespace": doc.metadata.get("source_namespace", namespace),
-                "metadata": doc.metadata,
-            }
-            for doc in docs
-        ]
-        
-        # Cache answer
-        self.cache.set(cache_key, {"answer": answer, "sources": sources})
-
-        return {"answer": answer, "sources": sources, "namespace": namespace}
-
-        docs = self.retriever.get_documents(query, namespace=namespace, top_k=top_k)
-        
-        chain = (
-            {
-                "context": lambda x: self._format_docs(docs),
-                "question": lambda x: query,
-            }
-            | self.prompt
-            | self.llm
-            | self.parser
-        )
-        
-        # Collect all chunks
-        answer = ""
-        async for chunk in chain.astream({}):
-            answer += chunk
-        
-        sources = [
-            {
-                "id": getattr(doc, "id", None),
-                "namespace": doc.metadata.get("source_namespace", namespace),
-                "metadata": doc.metadata,
-            }
-            for doc in docs
-        ]
-        
-        # Cache answer
-        self.cache.set(cache_key, {"answer": answer, "sources": sources})
-
-        return {"answer": answer, "sources": sources, "namespace": namespace}
-
-        docs = self.retriever.get_documents(query, namespace=namespace, top_k=top_k)
-        
-        chain = (
-            {
-                "context": lambda x: self._format_docs(docs),
-                "question": lambda x: query,
-            }
-            | self.prompt
-            | self.llm
-            | self.parser
-        )
-        
-        # Collect all chunks
-        answer = ""
-        async for chunk in chain.astream({}):
-            answer += chunk
+        answer = "".join(answer_chunks)
         
         sources = [
             {

@@ -22,7 +22,7 @@ CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE STRICTLY:
    - Write in plain natural language with a conversational tone
    - Use clear, flowing paragraphs instead of rigid definitions
    - For lists, use simple numbered points like: 1. First point 2. Second point
-   -Add space between every word
+   - Add space between every word.
    - For emphasis, use natural language patterns (like "The key thing is..." or "Most importantly...")
    - NO markdown formatting, NO special characters, NO bold/italics
    - Avoid textbook-style "Definition:" labels - just explain naturally
