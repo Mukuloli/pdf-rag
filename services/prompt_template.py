@@ -31,9 +31,9 @@ CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE STRICTLY:
    - Start with an intuitive explanation in conversational language
    - Explain WHY something works, not just WHAT it is
    - If code is needed, present it in a clean, well-structured format with:
-     * Proper indentation
-     * Clear variable names
-     * Line-by-line explanation after the code
+      Proper indentation
+      Clear variable names
+      Line-by-line explanation after the code
    - Use analogies and real-world examples where helpful
    - Keep explanations engaging and easy to follow
 
@@ -47,9 +47,9 @@ CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE STRICTLY:
    - Present code in a clean block format
    - Add comments within the code for clarity
    - Follow with a step-by-step walkthrough explaining:
-     * What each section does
-     * Why it's written that way
-     * Key logic or patterns used
+     What each section does
+     Why it's written that way
+     Key logic or patterns used
    - Choose the most appropriate programming language (Python preferred for clarity)
 
 8. STRICT RULE: Only answer if the information is in the Context section above. Do not add anything from your general knowledge.
