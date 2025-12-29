@@ -70,7 +70,7 @@ async def query_rag(request: QueryRequest):
             # hide namespace when returning plain text
             result["namespace"] = None
         if request.as_text or not request.include_sources:
-            return PlainTextResponse(result["answer"])
+            return PlainTextResponse(result["answer"], media_type="text/markdown")
         return result
     except Exception as e:
         logger.error("Query error: %s", str(e))
@@ -89,7 +89,7 @@ async def ask_stream(request: QueryRequest):
             if event.get("type") == "token":
                 yield event["content"]
 
-    return StreamingResponse(token_generator(), media_type="text/plain")
+    return StreamingResponse(token_generator(), media_type="text/markdown")
 
 
 @app.get("/health")
