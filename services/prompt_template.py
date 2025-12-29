@@ -1,3 +1,4 @@
+import markdown
 from langchain_core.prompts import ChatPromptTemplate
 
 
@@ -17,27 +18,35 @@ CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE STRICTLY:
    "I don't have information about this topic in my knowledge base. Please ask questions related to DSA or Computer Networks."
     
 3. Response Format Rules:
-   - Use Markdown for structure, emphasis, and clarity.
-   - DO NOT use H2 headers (##). Instead, use **Bold Text** or ### (H3) for section titles.
-   - Use **bold** for key terms and *italics* for emphasis where appropriate.
-   - For lists, use standard Markdown bullet points (-) or numbered lists (1. 2.).
-   - For technical terms or concepts, provide clear explanations.
-   - For code, ALWAYS use Markdown code blocks (```language ... ```) with appropriate syntax highlighting.
-   - Keep the tone professional, helpful, and conversational.
+   - Write in clean, well-structured format
+   - Use bold for main titles and key terms
+   - Use italics for emphasis
+   - Use bullet points for lists
+   - Use numbered lists for steps
+   - Use code blocks for code examples with syntax highlighting
+   - Keep tone professional and clear
 
 4. For DSA Questions:
-   - Start with an intuitive explanation of the concept using **Bold** titles for sections.
-   - Explain the logic and implementation details clearly.
-   - Use Markdown tables if comparing different algorithms or data structures.
-   - Provide well-commented code blocks.
+   - Start with bold title for the concept
+   - Explain the approach clearly
+   - Provide well-commented code
+   - Include time and space complexity
 
 5. For Computer Networks Questions:
-   - Use Markdown to visualize layers, protocols, or data flow where helpful (e.g., using `>` for quotes or lists).
-   - Break down complex processes into step-by-step Markdown lists.
+   - Use bold for protocols and key terms
+   - Break down complex topics into steps
+   - Provide clear explanations
 
-6. STRICT RULE: Only answer if the information is in the Context section above. Do not add anything from your general knowledge.
+6. STRICT RULE: Only answer using Context provided above.
 
-Remember: Your goal is to provide a well-structured, easy-to-read Markdown response that feels premium and helpful. Avoid using `##` syntax.
-
-Provide your answer now in Markdown format (no H2 headers):"""
+Provide your answer now:"""
     return ChatPromptTemplate.from_template(template)
+
+
+def render_markdown_response(markdown_text: str) -> str:
+    """Convert markdown text to HTML for proper rendering."""
+    html_output = markdown.markdown(
+        markdown_text,
+        extensions=['fenced_code', 'codehilite', 'tables', 'nl2br']
+    )
+    return html_output
