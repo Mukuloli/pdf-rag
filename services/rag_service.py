@@ -39,11 +39,28 @@ class RAGService:
             ]
         )
 
+    def _get_greeting_response(self, query: str) -> str | None:
+        normalized = query.strip().lower()
+        import re
+        normalized = re.sub(r'[^\w\s]', '', normalized)
+        if normalized in {"hi", "hii", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening", "hi there", "hello there"}:
+            return "Hello! I am your AI assistant. How can I help you today?"
+        return None
+
     async def query_stream(
         self, query: str, namespace: str = "default", top_k: int = 5
     ) -> AsyncIterator[Dict]:
         """Stream the answer token by token."""
         
+        greeting_response = self._get_greeting_response(query)
+        if greeting_response:
+            yield {"type": "sources", "sources": [], "namespace": namespace}
+            # Break greeting into words to simulate streaming token by token
+            for word in greeting_response.split(" "):
+                yield {"type": "token", "content": word + " "}
+            yield {"type": "complete"}
+            return
+
         cache_key = f"{namespace}:{query.strip()}"
         cached = self.cache.get(cache_key)
         if cached:
@@ -98,6 +115,14 @@ class RAGService:
 
     async def query(self, query: str, namespace: str = "default", top_k: int = 5) -> Dict:
         """Non-streaming version for backward compatibility."""
+        greeting_response = self._get_greeting_response(query)
+        if greeting_response:
+            return {
+                "answer": greeting_response,
+                "sources": [],
+                "namespace": namespace,
+            }
+
         cache_key = f"{namespace}:{query.strip()}"
         cached = self.cache.get(cache_key)
         if cached:
